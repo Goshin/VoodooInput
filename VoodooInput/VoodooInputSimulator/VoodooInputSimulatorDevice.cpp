@@ -79,7 +79,7 @@ void VoodooInputSimulatorDevice::constructReportGated(const VoodooInputEvent& mu
     input_report.timestamp_buffer[2] = (milli_timestamp >> 0xd) & 0xFF;
     
     // finger data
-    bool input_active = false;
+    bool input_active = input_report.Button;
     bool is_error_input_active = false;
     
     for (int i = 0; i < multitouch_event.contact_count + 1; i++) {
@@ -94,7 +94,7 @@ void VoodooInputSimulatorDevice::constructReportGated(const VoodooInputEvent& mu
         
         // in case the obtained id is greater than 14, usually 0~4 for common devices.
         UInt16 finger_id = transducer->secondaryId % 15;
-        if (!transducer->isTransducerActive) {
+        if (!transducer->isTransducerActive && !input_report.Button) {
             touch_state[finger_id] = 0;
         } else {
             input_active = true;
@@ -203,7 +203,7 @@ void VoodooInputSimulatorDevice::constructReportGated(const VoodooInputEvent& mu
             finger_data.Pressure = 120;
         }
         
-        if (!transducer->isTransducerActive) {
+        if (!transducer->isTransducerActive && !input_report.Button) {
             finger_data.State = 0x7;
             finger_data.Priority = 0x5;
             finger_data.Size = 0x0;
